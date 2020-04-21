@@ -1,7 +1,7 @@
 #pragma once
-class MyCronTime {
+static class MyCronTime {
 	public:
-		MyCronTime()
+		/*MyCronTime::MyCronTime()
 		{
 			//minuteC = "*";//getValue(str, ' ', 0);
 			//hourC = "*";//getValue(str, ' ', 1);
@@ -11,11 +11,11 @@ class MyCronTime {
 			Serial.println(hourC);
 			Serial.println(weekDayC);
 			Serial.println(dayC);*/
-			//Serial << minuteC << " " << hourC << " " << dayC << " " << weekDayC<< '\n';
+			//Serial << minuteC << " " << hourC << " " << dayC << " " << weekDayC<< '\n';	
 	
-		}
+		//}
 
-		bool checkCronString()
+		static bool checkCronString()
 		{
 			bool errFlag = false;
 			Serial.println("start check");
@@ -55,7 +55,7 @@ class MyCronTime {
 		}
 
 		
-		time_t calculateTimer(time_t *nowTime, String *str)
+		static void calculateTimer(time_t *nowTime, String *str)
 		{
 			Serial.println("1");
 			int cronFakeStr[4] = { -1,-1,-1,-1 };
@@ -69,15 +69,15 @@ class MyCronTime {
 			if (m)
 			{
 				Serial.println("Truelz");
-				return 0;
+				//return 0;
 			}
 			else
 			{
 				Serial.println("1");
-				calcMinute(&nowTime, cronFakeStr);
-				calcHour(&nowTime, cronFakeStr);
-				calcDay(&nowTime, cronFakeStr);
-				calcWeekday(&nowTime, cronFakeStr);
+				calcMinute(nowTime, cronFakeStr);
+				calcHour(nowTime, cronFakeStr);
+				calcDay(nowTime, cronFakeStr);
+				calcWeekday(nowTime, cronFakeStr);
 
 				//return nowTime;
 			}
@@ -85,14 +85,14 @@ class MyCronTime {
 
 
 	private:
-		String minuteC;
-		String hourC;
-		String dayC;
-		String weekDayC;
-		int dayOfMonth[12] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 
+		static String minuteC;
+		static String hourC;
+		static String dayC;
+		static String weekDayC;
+		static constexpr int dayOfMonth[12] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 
-		String getValue(String *data, char separator, int index)
+		static String getValue(String *data, char separator, int index)
 		{
 			int found = 0;
 			int strIndex[] = { 0, -1 };
@@ -109,7 +109,7 @@ class MyCronTime {
 		}
 
 
-		bool isNumber(String str)
+		static bool isNumber(String str)
 		{
 			bool a = true;
 			for (int i = 0; i < str.length(); i++)
@@ -127,7 +127,7 @@ class MyCronTime {
 				return false;
 		}
 
-		bool isBetween(String value, int a, int b)
+		static bool isBetween(String value, int a, int b)
 		{
 			int v = value.toInt();
 				if (a <= v && v <= b)
@@ -137,7 +137,7 @@ class MyCronTime {
 		}
 
 
-		bool checkInterval(String str, int a, int b)
+		static bool checkInterval(String str, int a, int b)
 		{
 			String vlst0 = getValue(&str, '-', 0);
 			String vlst1 = getValue(&str, '-', 1);
@@ -164,7 +164,8 @@ class MyCronTime {
 	
 		}
 
-		String checkValue(String value) {
+		static String checkValue(String value)
+		{
 			if (value == "*" || isNumber(value))
 				if (isNumber(value))
 					return "True";
@@ -174,7 +175,7 @@ class MyCronTime {
 				return "err";
 		}
 
-		bool checkErr(bool errFlag, int a, int b, String value)
+		static bool checkErr(bool errFlag, int a, int b, String value)
 		{
 			if (checkValue(value) == "True")
 			{
@@ -188,108 +189,108 @@ class MyCronTime {
 			return errFlag;
 		}
 
-		time_t zeroMinuteInterval(time_t ***timerTime, int cronFakeStr[4])
+		static void zeroMinuteInterval(time_t *timerTime, int cronFakeStr[4])
 		{
 			if (!isNumber(minuteC) && minuteC != "*")
-				***timerTime = ***timerTime - minute(***timerTime) * 60 + cronFakeStr[0] * 60;
+				*timerTime = *timerTime - minute(*timerTime) * 60 + cronFakeStr[0] * 60;
 
 			//return timerTime;
 		}
 		
-		time_t zeroHourInterval(time_t ***timerTime, int cronFakeStr[4])
+		static void zeroHourInterval(time_t *timerTime, int cronFakeStr[4])
 		{
 			if (!isNumber(hourC) && hourC != "*")
-				***timerTime = ***timerTime - hour(***timerTime) * 3600 + cronFakeStr[1] * 3600;
+				*timerTime = *timerTime - hour(*timerTime) * 3600 + cronFakeStr[1] * 3600;
 
 			//return timerTime;
 		}
 
-		time_t zeroMinute(time_t ***timerTime)
+		static void zeroMinute(time_t *timerTime)
 		{
 			if (minuteC == "*")
-				***timerTime = ***timerTime - minute(***timerTime) * 60;
+				*timerTime = *timerTime - minute(*timerTime) * 60;
 
 			//return timerTime;
 		}
 
-		time_t zeroHour(time_t ***timerTime)
+		static void zeroHour(time_t *timerTime)
 		{
 			if (hourC == "*")
-				***timerTime = ***timerTime - hour(***timerTime) * 3600;
+				*timerTime = *timerTime - hour(*timerTime) * 3600;
 
 			//return timerTime;
 		}
 
-		time_t calcDayForMonth(time_t ***timerTime, String today)
+		static void calcDayForMonth(time_t *timerTime, String today)
 		{
-			if (dayOfMonth[month(***timerTime) - 1] > today.toInt())
+			if (dayOfMonth[month(*timerTime) - 1] > today.toInt())
 			{
-				***timerTime = ***timerTime;
+				*timerTime = *timerTime;
 			}
 			else
 			{
-				***timerTime = ***timerTime + (dayOfMonth[month(***timerTime) - 1] - day(***timerTime) + 1) * 86400;
-				while (dayOfMonth[month(***timerTime) - 1] < today.toInt())
+				*timerTime = *timerTime + (dayOfMonth[month(*timerTime) - 1] - day(*timerTime) + 1) * 86400;
+				while (dayOfMonth[month(*timerTime) - 1] < today.toInt())
 				{
-					***timerTime = ***timerTime + dayOfMonth[month(***timerTime) - 1] * 86400;
+					*timerTime = *timerTime + dayOfMonth[month(*timerTime) - 1] * 86400;
 				}
 			}
 
 			//return timerTime;
 		}
 
-		int weekDayNormal(time_t timerTime)
+		static int weekDayNormal(time_t *timerTime)
 		{
 			int wd;
-			if (weekday(timerTime) == 1)
+			if (weekday(*timerTime) == 1)
 				wd = 7;
 			else
-				wd = weekday(timerTime) - 1;
+				wd = weekday(*timerTime) - 1;
 			//wd = weekday(timerTime);
 			Serial.print("wd = ");
 			Serial.println(wd);
 			return wd;
 		}
 
-		time_t calcDayForWeekday(time_t ***timerTime, String dayTimer)
+		static void calcDayForWeekday(time_t *timerTime, String dayTimer)
 		{
-			while (day(***timerTime) != dayTimer.toInt())
+			while (day(*timerTime) != dayTimer.toInt())
 			{
-				***timerTime = ***timerTime + 7 * 86400;
+				*timerTime = *timerTime + 7 * 86400;
 			}
 
 			//return timerTime;
 		}
 
-		time_t calcDayForWeekdayInterval(time_t timerTime, int dayTimer,String a, String b)
+		static void calcDayForWeekdayInterval(time_t *timerTime, int dayTimer,String a, String b)
 		{
-			while (day(timerTime) != dayTimer)
+			while (day(*timerTime) != dayTimer)
 			{
-				while (a.toInt() <= b.toInt() && day(timerTime) != dayTimer)
+				while (a.toInt() <= b.toInt() && day(*timerTime) != dayTimer)
 				{
-					timerTime = timerTime + 86400;
+					*timerTime = *timerTime + 86400;
 				}
-				if (day(timerTime) != dayTimer)
-					timerTime = timerTime + (7 - weekDayNormal(timerTime) + a.toInt()) * 86400;
+				if (day(*timerTime) != dayTimer)
+					*timerTime = *timerTime + (7 - weekDayNormal(timerTime) + a.toInt()) * 86400;
 			}
 			//return timerTime;
 		}
 
-		time_t calcIntervalDayForWeekdayInterval(time_t timerTimer, int a, int b, int da, int db)
+		static void calcIntervalDayForWeekdayInterval(time_t *timerTimer, int a, int b, int da, int db)
 		{
 			bool check = true;
 			while (check)
 			{
-				if (da <= day(timerTimer) && day(timerTimer) <= db && a <= weekDayNormal(timerTimer) && weekDayNormal(timerTimer) <= b)
+				if (da <= day(*timerTimer) && day(*timerTimer) <= db && a <= weekDayNormal(timerTimer) && weekDayNormal(timerTimer) <= b)
 					check = false;
 				else
-					timerTimer = timerTimer + 86400;
+					*timerTimer = *timerTimer + 86400;
 			}
 
-			return timerTimer;
+			//return timerTimer;
 		}
 
-		time_t calcDayForWeekdaySteps(time_t timerTime, int cronFakeLst[4], int value)
+		static void calcDayForWeekdaySteps(time_t *timerTime, int cronFakeLst[4], int value)
 		{
 			String lst0;
 			String lst1;
@@ -298,9 +299,9 @@ class MyCronTime {
 			lst1 = getValue(&temp, '-', 1);
 			if (isNumber(lst0))
 			{
-				while (!(lst0.toInt() <= day(timerTime) && day(timerTime) <= lst1.toInt() && (weekDayNormal(timerTime) % value) == 0))
+				while (!(lst0.toInt() <= day(*timerTime) && day(*timerTime) <= lst1.toInt() && (weekDayNormal(timerTime) % value) == 0))
 				{
-					timerTime = timerTime + 86400;
+					*timerTime = *timerTime + 86400;
 				}
 			}
 
@@ -309,17 +310,17 @@ class MyCronTime {
 			lst1 = getValue(&temp, '/', 1);
 			if (isNumber(lst0))
 			{
-				while (!((weekDayNormal(timerTime)) % value == 0 && (day(timerTime) % value) == 0))
+				while (!((weekDayNormal(timerTime)) % value == 0 && (day(*timerTime) % value) == 0))
 				{
-					timerTime = timerTime + 86400;
+					*timerTime = *timerTime + 86400;
 				}
 			}
 
 			if (isNumber(dayC))
 			{
-				while (!(day(timerTime) == dayC.toInt() && weekDayNormal(timerTime) % value == 0))
+				while (!(day(*timerTime) == dayC.toInt() && weekDayNormal(timerTime) % value == 0))
 				{
-					timerTime = timerTime + 86400;
+					*timerTime = *timerTime + 86400;
 				}
 			}
 
@@ -327,20 +328,20 @@ class MyCronTime {
 			{
 				while (!(weekDayNormal(timerTime) % value == 0))
 				{
-					timerTime = timerTime + 86400;
+					*timerTime = *timerTime + 86400;
 				}
 			}
 
 			if (cronFakeLst[1] == -1)
-				timerTime = timerTime - hour(timerTime) * 3600;
+				*timerTime = *timerTime - hour(*timerTime) * 3600;
 
 			if (cronFakeLst[0] == -1)
-				timerTime = timerTime - minute(timerTime) * 60;
+				*timerTime = *timerTime - minute(*timerTime) * 60;
 
-			return timerTime;
+			//return timerTime;
 		}
 
-		String splitCronString(String str)
+		static void splitCronString(String str)
 		{
 			minuteC = getValue(&str, ' ', 0);
 			hourC = getValue(&str, ' ', 1);
@@ -349,32 +350,32 @@ class MyCronTime {
 			Serial << minuteC << " " << hourC << " " << dayC << " " << weekDayC << '\n';
 		}
 
-		time_t calcMinute(time_t **timerTime, int *cronFakeStr)
+		static void calcMinute(time_t *timerTime, int *cronFakeStr)
 		{
 			if (isNumber(minuteC) || minuteC == "*")
 			{
 				if (minuteC == "*")
 				{
 					if (hourC == "*")
-						**timerTime = **timerTime + 60;
+						*timerTime = *timerTime + 60;
 					if (isNumber(hourC))
 					{
-						if (int(hour(**timerTime)) == hourC.toInt())
-							**timerTime = **timerTime + 60;
+						if (int(hour(*timerTime)) == hourC.toInt())
+							*timerTime = *timerTime + 60;
 						else
-							**timerTime = **timerTime - (minute(**timerTime) * 60);
+							*timerTime = *timerTime - (minute(*timerTime) * 60);
 					}
 				}
 				else
 				{
-					int minNow = minute(**timerTime);
+					int minNow = minute(*timerTime);
 					if (minNow < minuteC.toInt())
-						**timerTime = **timerTime + (minuteC.toInt() - (minNow)) * 60;
+						*timerTime = *timerTime + (minuteC.toInt() - (minNow)) * 60;
 
 					if (minNow > minuteC.toInt())
-						**timerTime = **timerTime + (60 - minNow + minuteC.toInt()) * 60;
+						*timerTime = *timerTime + (60 - minNow + minuteC.toInt()) * 60;
 					else
-						**timerTime = **timerTime + 3600;
+						*timerTime = *timerTime + 3600;
 				}
 			}
 			else
@@ -388,12 +389,12 @@ class MyCronTime {
 				if (isNumber(lst0))
 				{
 					cronFakeStr[0] = lst0.toInt();
-					if (lst0.toInt() <= minute(**timerTime) && minute(**timerTime) < lst1.toInt())
-						**timerTime = **timerTime + 60;
-					if (lst0.toInt() > minute(**timerTime))
-						**timerTime = **timerTime + (lst0.toInt() - minute(**timerTime)) * 60;
+					if (lst0.toInt() <= minute(*timerTime) && minute(*timerTime) < lst1.toInt())
+						*timerTime = *timerTime + 60;
+					if (lst0.toInt() > minute(*timerTime))
+						*timerTime = *timerTime + (lst0.toInt() - minute(*timerTime)) * 60;
 					else
-						**timerTime = **timerTime + (60 - minute(**timerTime) + lst0.toInt());
+						*timerTime = *timerTime + (60 - minute(*timerTime) + lst0.toInt());
 				}
 				else
 				{
@@ -403,34 +404,34 @@ class MyCronTime {
 					temp = minuteC;
 					lst0 = getValue(&temp, '/', 0);
 					lst1 = getValue(&temp, '/', 1);
-					int nowMin = minute(**timerTime);
+					int nowMin = minute(*timerTime);
 
 					if (nowMin == 0)
-						**timerTime = **timerTime + int(lst1.toInt()) * 60;
+						*timerTime = *timerTime + int(lst1.toInt()) * 60;
 					if ((nowMin - (nowMin % lst1.toInt()) + lst1.toInt()) < 59)
-						**timerTime = **timerTime + lst1.toInt() * 60 - (nowMin % lst1.toInt()) * 60;
+						*timerTime = *timerTime + lst1.toInt() * 60 - (nowMin % lst1.toInt()) * 60;
 					else
-						**timerTime = **timerTime + (60 - nowMin) * 60;
+						*timerTime = *timerTime + (60 - nowMin) * 60;
 				}
 			}
 
 			//return timerTime;
 		}
 
-		time_t calcHour(time_t **timerTime, int *cronFakeStr)
+		static void calcHour(time_t *timerTime, int *cronFakeStr)
 		{
 			if (isNumber(hourC) && hourC == "*")
 			{
 				if (hourC == "*")
-					**timerTime = **timerTime;
+					*timerTime = *timerTime;
 				else
 				{
-					int nowHour = hour(**timerTime);
+					int nowHour = hour(*timerTime);
 					if (nowHour < hourC.toInt())
-						**timerTime = **timerTime + (hourC.toInt() - nowHour) * 3600;
+						*timerTime = *timerTime + (hourC.toInt() - nowHour) * 3600;
 
 					if (nowHour > hourC.toInt())
-						**timerTime = **timerTime + (24 - nowHour + hourC.toInt()) * 3600;
+						*timerTime = *timerTime + (24 - nowHour + hourC.toInt()) * 3600;
 				}
 
 			}
@@ -445,19 +446,19 @@ class MyCronTime {
 				if (isNumber(lst0))
 				{
 					cronFakeStr[1] = lst0.toInt();
-					if (lst0.toInt() <= hour(**timerTime) && hour(**timerTime) < lst1.toInt())
-						**timerTime = **timerTime;
+					if (lst0.toInt() <= hour(*timerTime) && hour(*timerTime) < lst1.toInt())
+						*timerTime = *timerTime;
 					else
-						if (lst0.toInt() > hour(**timerTime))
+						if (lst0.toInt() > hour(*timerTime))
 						{
-							**timerTime = **timerTime + (lst0.toInt() - hour(**timerTime)) * 3600;
+							*timerTime = *timerTime + (lst0.toInt() - hour(*timerTime)) * 3600;
 							if (minuteC == "*")
-								**timerTime = **timerTime - (minute(**timerTime)) * 60;
+								*timerTime = *timerTime - (minute(*timerTime)) * 60;
 							if (!isNumber(minuteC) && minuteC != "*")
-								**timerTime = **timerTime - minute(**timerTime) * 60 + cronFakeStr[0] * 60;
+								*timerTime = *timerTime - minute(*timerTime) * 60 + cronFakeStr[0] * 60;
 						}
 						else
-							**timerTime = **timerTime + (24 - hour(**timerTime) + lst0.toInt()) * 3600;
+							*timerTime = *timerTime + (24 - hour(*timerTime) + lst0.toInt()) * 3600;
 				}
 				else
 				{
@@ -467,24 +468,24 @@ class MyCronTime {
 					String temp = hourC;
 					lst0 = getValue(&temp, '/', 0);
 					lst1 = getValue(&temp, '/', 1);
-					int nowHour = hour(**timerTime);
+					int nowHour = hour(*timerTime);
 					if (nowHour == 0)
-						**timerTime = **timerTime + lst1.toInt() * 3600;
+						*timerTime = *timerTime + lst1.toInt() * 3600;
 					else
 						if (nowHour % lst1.toInt() == 0)
-							**timerTime = **timerTime;
+							*timerTime = *timerTime;
 						else
 							if ((nowHour - (nowHour % lst1.toInt()) + lst1.toInt()) < 24 && nowHour % lst1.toInt() != 0)
 							{
-								**timerTime = **timerTime - nowHour * 3600 + (nowHour - (nowHour % lst1.toInt()) + lst1.toInt()) * 3600;
+								*timerTime = *timerTime - nowHour * 3600 + (nowHour - (nowHour % lst1.toInt()) + lst1.toInt()) * 3600;
 								if ((cronFakeStr[0] != -1))
-									**timerTime = **timerTime - (minute(**timerTime)) * 60;
+									*timerTime = *timerTime - (minute(*timerTime)) * 60;
 							}
 							else
 							{
-								**timerTime = **timerTime + (24 - nowHour) * 3600;
+								*timerTime = *timerTime + (24 - nowHour) * 3600;
 								if (cronFakeStr[0] != -1)
-									**timerTime = **timerTime - minute(**timerTime) * 60;
+									*timerTime = *timerTime - minute(*timerTime) * 60;
 							}
 				}
 
@@ -493,45 +494,45 @@ class MyCronTime {
 			//return timerTime;
 		}
 
-		time_t calcDay(time_t **timerTime, int *cronFakeStr)
+		static void calcDay(time_t *timerTime, int *cronFakeStr)
 		{
 
 			if (isNumber(dayC) || dayC == "*")
 			{
 				if (dayC == "*")
-					**timerTime;
+					*timerTime;
 				else
 				{
-					int nowDay = day(**timerTime);
+					int nowDay = day(*timerTime);
 					if (nowDay < dayC.toInt())
 					{
-						**timerTime = calcDayForMonth(&timerTime, dayC);
-						**timerTime = **timerTime + (dayC.toInt() - nowDay) * 86400;
-						**timerTime = zeroHour(&timerTime);
-						**timerTime = zeroMinute(&timerTime);
-						**timerTime = zeroHourInterval(&timerTime, cronFakeStr);
-						**timerTime = zeroMinuteInterval(&timerTime, cronFakeStr);
+						calcDayForMonth(timerTime, dayC);
+						*timerTime = *timerTime + (dayC.toInt() - nowDay) * 86400;
+						zeroHour(timerTime);
+						zeroMinute(timerTime);
+						zeroHourInterval(timerTime, cronFakeStr);
+						zeroMinuteInterval(timerTime, cronFakeStr);
 					}
 					else
 						if (nowDay > dayC.toInt())
 						{
-							**timerTime = calcDayForMonth(&timerTime, dayC);
-							int numberOfDays = dayOfMonth[month(**timerTime) - 1];
-							**timerTime = zeroHour(&timerTime);
-							**timerTime = zeroMinute(&timerTime);
-							**timerTime = zeroHourInterval(&timerTime, cronFakeStr);
-							**timerTime = zeroMinuteInterval(&timerTime, cronFakeStr);
-							if (month(**timerTime) == 2)
-								if (year(**timerTime) % 4 == 0)
+							calcDayForMonth(timerTime, dayC);
+							int numberOfDays = dayOfMonth[month(*timerTime) - 1];
+							zeroHour(timerTime);
+							zeroMinute(timerTime);
+							zeroHourInterval(timerTime, cronFakeStr);
+							zeroMinuteInterval(timerTime, cronFakeStr);
+							if (month(*timerTime) == 2)
+								if (year(*timerTime) % 4 == 0)
 									numberOfDays = numberOfDays + 1;
 
-							(**timerTime) + (numberOfDays - nowDay + dayC.toInt()) * 86400;
+							*timerTime = (*timerTime) + (numberOfDays - nowDay + dayC.toInt()) * 86400;
 						}
 				}
 			}
 			else
 			{
-				int nowDay = day(**timerTime);
+				int nowDay = day(*timerTime);
 				String lst0;
 				String lst1;
 				String temp = dayC;
@@ -541,23 +542,23 @@ class MyCronTime {
 				if (isNumber(lst0))
 				{
 					cronFakeStr[2] = lst0.toInt();
-					if (lst0.toInt() <= day(**timerTime) && day(**timerTime) < lst1.toInt())
+					if (lst0.toInt() <= day(*timerTime) && day(*timerTime) < lst1.toInt())
 					{
-						**timerTime = **timerTime;
+						*timerTime = *timerTime;
 					}
 					else
 					{
-						if (lst0.toInt() > day(**timerTime))
+						if (lst0.toInt() > day(*timerTime))
 						{
-							**timerTime = **timerTime + (lst0.toInt() - day(**timerTime)) * 86400;
-							**timerTime = zeroMinute(&timerTime);
-							**timerTime = zeroHour(&timerTime);
-							**timerTime = zeroHourInterval(&timerTime, cronFakeStr);
-							**timerTime = zeroMinuteInterval(&timerTime, cronFakeStr);
+							*timerTime = *timerTime + (lst0.toInt() - day(*timerTime)) * 86400;
+							zeroMinute(timerTime);
+							zeroHour(timerTime);
+							zeroHourInterval(timerTime, cronFakeStr);
+							zeroMinuteInterval(timerTime, cronFakeStr);
 						}
 						else
 						{
-							**timerTime = **timerTime + (dayOfMonth[month(**timerTime) - 1] - day(**timerTime) + lst0.toInt()) * 86400;
+							*timerTime = *timerTime + (dayOfMonth[month(*timerTime) - 1] - day(*timerTime) + lst0.toInt()) * 86400;
 						}
 					}
 				}
@@ -569,16 +570,16 @@ class MyCronTime {
 					String temp = dayC;
 					lst0 = getValue(&temp, '/', 0);
 					lst1 = getValue(&temp, '/', 1);
-					nowDay = day(**timerTime);
-					int numberOfDays = dayOfMonth[month(**timerTime) - 1];
+					nowDay = day(*timerTime);
+					int numberOfDays = dayOfMonth[month(*timerTime) - 1];
 					if (nowDay - (nowDay % lst1.toInt()) + lst1.toInt() < numberOfDays)
 					{
 						timerTime = timerTime - nowDay % lst1.toInt() * 86400 + lst1.toInt() * 86400;
 						if (cronFakeStr[1] == -1)
-							**timerTime = **timerTime - hour(**timerTime) * 3600;
+							*timerTime = *timerTime - hour(*timerTime) * 3600;
 
 						if (cronFakeStr[0] == -1)
-							**timerTime = **timerTime - minute(**timerTime) * 60;
+							*timerTime = *timerTime - minute(*timerTime) * 60;
 					}
 
 				}
@@ -588,44 +589,44 @@ class MyCronTime {
 		}
 
 
-		time_t calcWeekday(time_t **timerTime, int *cronFakeStr)
+		static void calcWeekday(time_t *timerTime, int *cronFakeStr)
 		{
 			if (isNumber(weekDayC) || weekDayC == "*")
 			{
 				if (weekDayC == "*")
-					**timerTime = **timerTime;
+					*timerTime = *timerTime;
 				else
 				{
 					if (dayC == "*")
 					{
-						int numberOfWeekday = weekDayNormal(**timerTime);
+						int numberOfWeekday = weekDayNormal(timerTime);
 						if (numberOfWeekday < weekDayC.toInt())
-							**timerTime = **timerTime + (weekDayC.toInt() - numberOfWeekday) * 86400;
+							*timerTime = *timerTime + (weekDayC.toInt() - numberOfWeekday) * 86400;
 						else
 						{
 							if (numberOfWeekday > weekDayC.toInt())
-								**timerTime = **timerTime + (7 - numberOfWeekday + weekDayC.toInt()) * 86400;
+								*timerTime = *timerTime + (7 - numberOfWeekday + weekDayC.toInt()) * 86400;
 						}
 
 					}
 					else
 					{
-						int numberOfWeekday = weekDayNormal(**timerTime);
+						int numberOfWeekday = weekDayNormal(timerTime);
 						if (numberOfWeekday < weekDayC.toInt())
 						{
-							**timerTime = **timerTime + (weekDayC.toInt() - numberOfWeekday) * 86400;
-							**timerTime = calcDayForWeekday(&timerTime, dayC);
+							*timerTime = *timerTime + (weekDayC.toInt() - numberOfWeekday) * 86400;
+							calcDayForWeekday(timerTime, dayC);
 						}
 						else
 						{
 							if (numberOfWeekday > weekDayC.toInt())
 							{
-								**timerTime = **timerTime + (7 - numberOfWeekday + weekDayC.toInt()) * 86400;
-								**timerTime = calcDayForWeekday(&timerTime, dayC);
+								*timerTime = *timerTime + (7 - numberOfWeekday + weekDayC.toInt()) * 86400;
+								calcDayForWeekday(timerTime, dayC);
 							}
 							else
 							{
-								**timerTime = calcDayForWeekday(&timerTime, dayC);
+								calcDayForWeekday(timerTime, dayC);
 							}
 						}
 					}
@@ -643,35 +644,35 @@ class MyCronTime {
 				{
 					if (dayC == "*")
 					{
-						int numberOfWeekday = weekDayNormal(**timerTime);
+						int numberOfWeekday = weekDayNormal(timerTime);
 						if (numberOfWeekday < lst0.toInt())
 						{
-							**timerTime = **timerTime + (lst0.toInt() - numberOfWeekday) * 86400;
+							*timerTime = *timerTime + (lst0.toInt() - numberOfWeekday) * 86400;
 						}
 						else
 							if (numberOfWeekday > lst1.toInt())
-								**timerTime = **timerTime + (7 - numberOfWeekday + lst0.toInt()) * 86400;
+								*timerTime = *timerTime + (7 - numberOfWeekday + lst0.toInt()) * 86400;
 					}
 					else
 					{
 						if (isNumber(dayC))
 						{
-							int numberOfWeekday = weekDayNormal(**timerTime);
+							int numberOfWeekday = weekDayNormal(timerTime);
 							if (numberOfWeekday < lst0.toInt())
 							{
-								**timerTime = **timerTime + (lst0.toInt() - numberOfWeekday) * 86400;
-								**timerTime = calcDayForWeekdayInterval(**timerTime, dayC.toInt(), lst0, lst1);
+								*timerTime = *timerTime + (lst0.toInt() - numberOfWeekday) * 86400;
+								 calcDayForWeekdayInterval(timerTime, dayC.toInt(), lst0, lst1);
 							}
 							else
 							{
 								if (numberOfWeekday > lst1.toInt())
 								{
-									**timerTime = **timerTime + (7 - numberOfWeekday + lst0.toInt()) * 86400;
-									**timerTime = calcDayForWeekdayInterval(**timerTime, dayC.toInt(), lst0, lst1);
+									*timerTime = *timerTime + (7 - numberOfWeekday + lst0.toInt()) * 86400;
+									calcDayForWeekdayInterval(timerTime, dayC.toInt(), lst0, lst1);
 								}
 								else
 								{
-									**timerTime = calcDayForWeekdayInterval(**timerTime, dayC.toInt(), lst0, lst1);
+									calcDayForWeekdayInterval(timerTime, dayC.toInt(), lst0, lst1);
 								}
 							}
 						}
@@ -682,19 +683,20 @@ class MyCronTime {
 							String tempDay = dayC;
 							lstDay0 = getValue(&tempDay, '-', 0);
 							lstDay1 = getValue(&tempDay, '-', 1);
-							**timerTime = calcIntervalDayForWeekdayInterval(**timerTime, lst0.toInt(), lst1.toInt(), lstDay0.toInt(), lstDay1.toInt());
+							calcIntervalDayForWeekdayInterval(timerTime, lst0.toInt(), lst1.toInt(), lstDay0.toInt(), lstDay1.toInt());
 						}
 					}
 				}
 				else
 				{
-					if (weekDayNormal(**timerTime) % lst1.toInt() == 0)
-						**timerTime = **timerTime;
+					if (weekDayNormal(timerTime) % lst1.toInt() == 0)
+						*timerTime = *timerTime;
 					else
-						**timerTime = calcDayForWeekdaySteps(**timerTime, cronFakeStr, lst1.toInt());
+						calcDayForWeekdaySteps(timerTime, cronFakeStr, lst1.toInt());
 				}
 			}
 
 			//return timerTime;
 		}
 };
+

@@ -1,7 +1,8 @@
 #include <TimeLib.h>
 #include <Streaming.h>
-#include "CronClass.h"
-MyCronTime* cron = new MyCronTime();
+//#include "CronClass.h"
+#include "Header.h"
+//MyCronTime* cron = new MyCronTime();
 extern int __bss_end;
 extern void *__brkval;
 
@@ -15,12 +16,15 @@ void setup()
 void loop()
 {
     //Serial.println(memoryFree());
-	String st = "12-15 18-20 18-24 1-7";
+	/*String st = "12-15 18-20 18-24 1-7";
 	time_t prnt = 1587368160;
- 	cron->calculateTimer(&prnt, &st);
+ 	MyCronTime::calculateTimer(&prnt, &st);
 	Serial.print("result = ");
 	Serial.println(prnt);
-	Serial.println(memoryFree());
+	Serial.println(memoryFree());*/
+
+	Test a;
+	a.abc();
 
 }
 
