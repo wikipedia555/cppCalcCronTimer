@@ -1,5 +1,5 @@
 #pragma once
-static class MyCronTime {
+class MyCronTime {
 	public:
 		/*MyCronTime::MyCronTime()
 		{
@@ -90,7 +90,7 @@ static class MyCronTime {
 		static String hourC;
 		static String dayC;
 		static String weekDayC;
-		static constexpr int dayOfMonth[12] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+		static const int dayOfMonth[12];
 
 		static String getValue(String *data, char separator, int index)
 		{
@@ -700,3 +700,8 @@ static class MyCronTime {
 		}
 };
 
+String MyCronTime::weekDayC = "";
+String MyCronTime::minuteC = "";
+String MyCronTime::hourC = "";
+String MyCronTime::dayC = "";
+const int MyCronTime::dayOfMonth[] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };

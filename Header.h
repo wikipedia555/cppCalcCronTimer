@@ -1,5 +1,5 @@
 #pragma once
-class Test
+static class Test
 {
 	public:
 		static void abc()
